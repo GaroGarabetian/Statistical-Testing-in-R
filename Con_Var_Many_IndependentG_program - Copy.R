@@ -51,11 +51,12 @@ load_and_view_excel <- function() {
 }
 
 set_activity <- function(){
-  activity <- readline(prompt = "Type your activity for hypothesis testing:
-                                    tests for more than two samples")
+  activity <- readline(prompt = "Paste your activity for hypothesis testing and post hoc tests:")
   # Save the activity in the global environment
-  assign("activity", activity, envir = .GlobalEnv)
-  cat("Your activity is:", activity, "\n")
+  #assign("activity", activity, envir = .GlobalEnv)
+  cat("Your activity is: ")
+  print(activity)
+  return(activity)
 }
 
 set_group <- function(data) {
@@ -192,7 +193,7 @@ shapiro_decision_normality_test <- function(data){
       count_normality <- count_normality + 1 
     }
     else{
-      print(paste(dh_normality$group[i] , "'s reduction  normallity is violated"))
+      print(paste(dh_normality$group[i] , "'s reduction  is NOT normally distributed"))
     }
   }
   
