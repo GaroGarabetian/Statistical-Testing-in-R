@@ -302,6 +302,7 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     
   } else if (!normality_assumption & homoscedasticity) {
     cat("Normality is FALSE, but homoscedasticity is TRUE.\n")
+    cat("So, use of the Kruskal Wallis Rank Sum test\n")
     res <- my_data |> kruskal_test(y)
     hypothesis_decision(res)
     # Post Hoc Test
@@ -311,6 +312,7 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     
   } else if (!normality_assumption & !homoscedasticity) {
     cat("Both normality and homoscedasticity are FALSE.\n")
+    cat("So, we do the Kruskal Wallis Rank Sum test\n")
     res <- my_data |> kruskal_test(y)
     hypothesis_decision(res)
     # Post Hoc Test
@@ -320,14 +322,32 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
   }
 }
 
+###COMMENTS ON BUILDING THE ABOVE FUNCTIONS---------------
+#Decision Tree for Tests
+
+#normality_assumption == T && Homoscedasticity <- T --- use one-way ANOVA 
+
+#normality_assumption == T && Homoscedasticity <- F --- use ANOVA Welch's test 
+
+#  normality_assumption == F (&& homoscedasticity <- F or T )--- Kruskal Wallis test
+
+#PostHoc Tests Structure
+
+##One-way ANOVA normality_assumption == T && Homoscedasticity == T
+#Tukey test
+#Pairwise T-tests with Bonferroni Correction pool.sd = TRUE
+
+##ANOVA WITH UNEQUAl variance #normality_assumption == T && Homoscedasticity <- F 
+#Games - Howel
+
+## Kruskal Wallis test  normality_assumption == F (&& homoscedasticity <- F or T )
+#Dunn's approach  p.adjust.method = "bonferroni"
+#Pairwise comparisons using WilcoxMW’s test with Bonferroni correction 
 
 
-
-#main program-------------------
+#Start of the main program-------------------
 main <- function(){
 
-  
-#########################start of the program----------------------  
   cat("Welcome to the program!\n
        (Requires clean data, Only used for Continuous Variable with more than 2 independent groups)")
 
@@ -391,7 +411,7 @@ cat("Independence not violated. We check the normality through plot and Shapiro 
   cat("Study completed. Goodbye!\n")
 }
 
-
+#Run main() only now----
 main()
 #INPUTS BY USER
 #data_headache.xlsx
