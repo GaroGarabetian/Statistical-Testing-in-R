@@ -1,30 +1,9 @@
 #Removing all objects
 rm(list=ls())
 
-#Decision Tree for Tests------
+#Save the data and the script on the same folder (or set working directory)!!
 
-#normality_assumption == T && Homoscedasticity <- T --- use one-way ANOVA 
-
-#normality_assumption == T && Homoscedasticity <- F --- use ANOVA Welch's test 
-
-#  normality_assumption == F (&& homoscedasticity <- F or T )--- Kruskal Wallis test
-
-#PostHoc Tests Structure-----------
-
-##One-way ANOVA normality_assumption == T && Homoscedasticity == T
-#Tukey test
-#Pairwise T-tests with Bonferroni Correction pool.sd = TRUE
-
-##ANOVA WITH UNEQUAl variance #normality_assumption == T && Homoscedasticity <- F 
-#Games - Howel
-
-## Kruskal Wallis test  normality_assumption == F (&& homoscedasticity <- F or T )
-#Dunn's approach  p.adjust.method = "bonferroni"
-#Pairwise comparisons using WilcoxMW’s test with Bonferroni correction 
-
-
-
-#####ALL FUNCTIONS------------------------
+#####ALL FUNCTIONS (outside of the main)------------------------
 # Install and load required libraries
 load_packages <- function(packages) {
   for (pkg in packages) {
@@ -280,10 +259,11 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
   
   # Handle assumptions with if-else
   if (normality_assumption & homoscedasticity) {
-    cat("Use One-way ANOVA. Normality = TRUE, Homoscedasticity = TRUE.\n")
+    cat("Normality = TRUE, Homoscedasticity = TRUE.\n")
+    cat("So, use of One-way ANOVA. ")
     res <- my_data |> anova_test(y, detailed = T)
     hypothesis_decision(res)
-    # Post Hoc Tests
+    # Post Hoc Tests (function to choose which of the 2 tests)
     cat("Running post hoc test of Tukey's test\n")
     res_Tukey <- my_data %>% tukey_hsd(y)
     print(res_Tukey)
@@ -292,7 +272,8 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     print(res_TBonferroni)
     
   } else if (normality_assumption & !homoscedasticity) {
-    cat("Use ANOVA Welch's test. Normality = TRUE, Homoscedasticity = FALSE.\n")
+    cat(" Normality = TRUE, Homoscedasticity = FALSE.\n")
+    cat("So, use of ANOVA Welch's test.")
     res <- my_data |> welch_anova_test(y)
     hypothesis_decision(res)
     # Post Hoc Test
