@@ -159,7 +159,7 @@ set_dynamic_labels <- function(data, num_indepen_groups) {
 
 #Plot data and check normality graphically
 violin_boxplot_plot<- function(my_data,group,con_var,title_plot){
-  ggplot(my_data, aes(x=group, y= con_var)) +
+  plotsgroup <- ggplot(my_data, aes(x=group, y= con_var)) +
     geom_violin( aes(fill = group),scale = "count") +
     geom_boxplot(width = 0.11, outlier.shape = NA, alpha = 0.5) +
     geom_point(position = position_jitter(width = 0.05),
@@ -353,14 +353,15 @@ main <- function(){
   #Factor the group and naming all levels
   my_data <- set_dynamic_labels(my_data,num_indepen_groups)
   
+  sum_stat_h <- my_data |>
+    group_by(group) |>
+    describe(con_var) |>
+    mutate(described_variables = original_con_var_name) |>
+    select(described_variables, group, n, mean, sd, p25, p50, p75, skewness, kurtosis) |>
+    ungroup()
   
-  sum_stat_h<- my_data|>
-              group_by(group) |>
-              describe(con_var) |>
-              select(described_variables, group, n, mean, sd, p25, p50, p75, skewness, kurtosis) |> 
-              ungroup() 
   cat("Summary statistics for each group \n")
-  sum_stat_h
+  print(sum_stat_h)
   
   cat("Assumptions Checking \n")
   
@@ -370,8 +371,8 @@ cat("Independence not violated. We check the normality through plot and Shapiro 
   #Normality 3 steps----  
   title_plot <-readline(prompt = "Title of the plot : ")
       #Check normality graphically #function to set title, measures...
-  plotsgroup <-violin_boxplot_plot(my_data,group,con_var,title_plot)
-  plotsgroup
+  plotsgroup <<-violin_boxplot_plot(my_data,group,con_var,title_plot)
+  print(plotsgroup)
   # Save the plot as a PDF
   #ggsave("plots_per_group.pdf", plot = plotsgroup, width = 8, height = 6, units = "in")
   
