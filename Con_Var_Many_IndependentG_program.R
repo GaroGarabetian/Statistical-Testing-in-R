@@ -265,11 +265,11 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Tests (function to choose which of the 2 tests)
     cat("Running post hoc test of Tukey's test\n")
-    res_Tukey <- my_data %>% tukey_hsd(y)
-    res_Tukey
+    res_Tukey <<- my_data %>% tukey_hsd(y)
+    print(res_Tukey)
     cat("Running post hoc test of T-tests with Bonferroni Correction\n")
-    res_TBonferroni <- my_data %>% pairwise_t_test(y, pool.sd = TRUE, p.adjust.method = "bonferroni")
-    res_TBonferroni
+    res_TBonferroni <<- my_data %>% pairwise_t_test(y, pool.sd = TRUE, p.adjust.method = "bonferroni")
+    print(res_TBonferroni)
     
   } else if (normality_assumption & !homoscedasticity) {
     cat(" Normality = TRUE, Homoscedasticity = FALSE.\n")
@@ -278,7 +278,7 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Test
     cat("Running post hoc test of Games-Howell\n")
-    res_GH <- my_data |> games_howell_test(y)
+    res_GH <<- my_data |> games_howell_test(y)
     print(res_GH)
     
   } else if (!normality_assumption & homoscedasticity) {
@@ -288,7 +288,7 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Test
     cat("Running post hoc Pairwise comparisons using WMW’s test with Bonferroni correction\n")
-    resWilcox_Bon <- my_data %>% pairwise_wilcox_test(y, p.adjust.method = "bonferroni")
+    resWilcox_Bon <<- my_data %>% pairwise_wilcox_test(y, p.adjust.method = "bonferroni")
     print(resWilcox_Bon)
     
   } else if (!normality_assumption & !homoscedasticity) {
@@ -298,7 +298,7 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Test
     cat("Running post hoc test of Dunn's test\n")
-    resDunn <- my_data %>% dunn_test(y, p.adjust.method = "bonferroni")
+    resDunn <<- my_data %>% dunn_test(y, p.adjust.method = "bonferroni")
     print(resDunn)
   }
 }
@@ -391,13 +391,13 @@ cat("Independence not violated. We check the normality through plot and Shapiro 
 
 
   
-  cat("Study completed.(Don't forget to check the plot and read the results) Goodbye!\n")
+  cat("Study completed.(Don't forget to check the plot and verify the results) Goodbye!\n")
 }
 
 #Run main() only now----
 
-#main()
-
+main()
+res_TBonferroni
 
 #INPUTS BY USER
 #data_headache.xlsx
