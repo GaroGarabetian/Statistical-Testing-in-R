@@ -51,10 +51,10 @@ load_and_view_excel <- function() {
 }
 
 set_activity <- function(){
-  activity <- readline(prompt = "Paste your activity for hypothesis testing and post hoc tests:")
+  activity <- readline(prompt = "Paste your assignment for hypothesis testing and post hoc tests:")
   # Save the activity in the global environment
   #assign("activity", activity, envir = .GlobalEnv)
-  cat("Your activity is: ")
+  cat("Your assignment is: ")
   print(activity)
   return(activity)
 }
@@ -165,7 +165,7 @@ violin_boxplot_plot<- function(my_data,group,con_var,title_plot){
     geom_boxplot(width = 0.11, outlier.shape = NA, alpha = 0.5) +
     geom_point(position = position_jitter(width = 0.05),
                size = 1.2, alpha = 0.6) +
-    labs(y = "Reduction (percentage)", #original_con_var_name
+    labs(y = original_con_var_name, # 'Reduction (percentage)'
          title = title_plot) + #"Reduction Headache(%) by group"
     theme_pubr() +
     theme(plot.title.position = "plot",
@@ -265,11 +265,11 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Tests (function to choose which of the 2 tests)
     cat("Running post hoc test of Tukey's test\n")
-    res_Tukey <<- my_data %>% tukey_hsd(y)
-    print(res_Tukey)
+    res_Tukey <- my_data %>% tukey_hsd(y)
+    res_Tukey
     cat("Running post hoc test of T-tests with Bonferroni Correction\n")
-    res_TBonferroni <<- my_data %>% pairwise_t_test(y, pool.sd = TRUE, p.adjust.method = "bonferroni")
-    print(res_TBonferroni)
+    res_TBonferroni <- my_data %>% pairwise_t_test(y, pool.sd = TRUE, p.adjust.method = "bonferroni")
+    res_TBonferroni
     
   } else if (normality_assumption & !homoscedasticity) {
     cat(" Normality = TRUE, Homoscedasticity = FALSE.\n")
@@ -278,8 +278,8 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Test
     cat("Running post hoc test of Games-Howell\n")
-    res_GH <<- my_data |> games_howell_test(y)
-    print(res_GH)
+    res_GH <- my_data |> games_howell_test(y)
+    res_GH
     
   } else if (!normality_assumption & homoscedasticity) {
     cat("Normality is FALSE, but homoscedasticity is TRUE.\n")
@@ -288,8 +288,8 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Test
     cat("Running post hoc Pairwise comparisons using WMW’s test with Bonferroni correction\n")
-    resWilcox_Bon <<- my_data %>% pairwise_wilcox_test(y, p.adjust.method = "bonferroni")
-    print(resWilcox_Bon)
+    resWilcox_Bon <- my_data %>% pairwise_wilcox_test(y, p.adjust.method = "bonferroni")
+    resWilcox_Bon
     
   } else if (!normality_assumption & !homoscedasticity) {
     cat("Both normality and homoscedasticity are FALSE.\n")
@@ -298,7 +298,7 @@ handle_assumptions <- function(normality_assumption, homoscedasticity) {
     hypothesis_decision(res)
     # Post Hoc Test
     cat("Running post hoc test of Dunn's test\n")
-    resDunn <<- my_data %>% dunn_test(y, p.adjust.method = "bonferroni")
+    resDunn <- my_data %>% dunn_test(y, p.adjust.method = "bonferroni")
     print(resDunn)
   }
 }
@@ -331,7 +331,7 @@ main <- function(){
 
   cat("Welcome to the program!\n
   Statistical tests for more than two samples and post hoc tests
-(Requires clean data, Only used for Continuous Variable with more than 2 independent groups)")
+(Requires clean data. Only used for Continuous Variable with more than 2 independent groups)")
 
   print("Save your data to the same directory you have saved this R script")
   suppressWarnings(load_packages(c("readxl", "ggplot2", "tidyverse", "rstatix","dlookr","dplyr", "ggpol")))
@@ -397,10 +397,11 @@ cat("Independence not violated. We check the normality through plot and Shapiro 
 #Run main() only now----
 
 main()
-res_TBonferroni
+
 
 #INPUTS BY USER
-#data_headache.xlsx
+# ->data_headache.xlsx
+# -> Select continuous variable, group, title of violin normality plot, labels for the groups
 #
 # Example usage
 # homoscedasticity<-T
