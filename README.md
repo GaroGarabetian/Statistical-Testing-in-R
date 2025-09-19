@@ -44,11 +44,3 @@ main()
 
 4. Review summary statistics, plots, and test results. (Do your own tests as well!)
 
-
-flowchart TD
-    A[Start] --> B{Normality assumption (Shapiro-Wilk)?}
-    B -->|Yes| C{Homoscedasticity (Levene’s test)?}
-    B -->|No| E[Kruskal–Wallis test<br/>+ Dunn or Wilcoxon post hoc]
-    C -->|Yes| D[One-way ANOVA<br/>+ Tukey & Bonferroni post hoc]
-    C -->|No| F[Welch’s ANOVA<br/>+ Games–Howell post hoc]
-
